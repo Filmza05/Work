@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scopus Research Analytics Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-600 rounded-lg">
+                    <i class="fa-solid fa-chart-line text-xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                        Scopus Research Analytics Dashboard
+                    </h1>
+                    <p class="text-xs text-slate-400">การวิเคราะห์แนวโน้มงานวิจัยปี 2023–2025 (600 Publications)</p>
+                </div>
+            </div>
+            <span class="bg-indigo-950 border border-indigo-700 text-indigo-300 text-xs px-3 py-1 rounded-full">
+                <i class="fa-solid fa-database mr-1"></i> Data Version 2026
+            </span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Stat KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+                <div class="flex justify-between items-start text-slate-400 mb-2">
+                    <span class="text-sm font-medium">งานวิจัยทั้งหมด</span>
+                    <i class="fa-solid fa-book-bookmark text-indigo-400 text-lg"></i>
+                </div>
+                <div class="text-3xl font-bold text-white">600 <span class="text-xs font-normal text-slate-400">รายการ</span></div>
+                <div class="text-xs text-emerald-400 mt-2"><i class="fa-solid fa-arrow-up"></i> +80% ในปี 2025</div>
+            </div>
+
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+                <div class="flex justify-between items-start text-slate-400 mb-2">
+                    <span class="text-sm font-medium">สัดส่วน Open Access</span>
+                    <i class="fa-solid fa-lock-open text-cyan-400 text-lg"></i>
+                </div>
+                <div class="text-3xl font-bold text-white">47.8%</div>
+                <div class="text-xs text-slate-400 mt-2">287 บทความเข้าถึงฟรี</div>
+            </div>
+
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+                <div class="flex justify-between items-start text-slate-400 mb-2">
+                    <span class="text-sm font-medium">การอ้างอิงเฉลี่ย (Citations)</span>
+                    <i class="fa-solid fa-quote-right text-amber-400 text-lg"></i>
+                </div>
+                <div class="text-3xl font-bold text-white">2.65 <span class="text-xs font-normal text-slate-400">ครั้ง/เรื่อง</span></div>
+                <div class="text-xs text-amber-400 mt-2">สูงสุด 110 Citations</div>
+            </div>
+
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-5 shadow-lg">
+                <div class="flex justify-between items-start text-slate-400 mb-2">
+                    <span class="text-sm font-medium">สำนักพิมพ์อันดับ 1</span>
+                    <i class="fa-solid fa-trophy text-rose-400 text-lg"></i>
+                </div>
+                <div class="text-lg font-bold text-white truncate">LIPIcs Series</div>
+                <div class="text-xs text-slate-400 mt-2">ตีพิมพ์รวม 33 บทความ</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Chart 1: Year Trend -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg">
+                <h3 class="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-column text-indigo-400"></i> แนวโน้มจำนวนงานวิจัยตามปี (Publication Trend)
+                </h3>
+                <div class="h-64">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Document Types -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg">
+                <h3 class="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-pie-chart text-cyan-400"></i> สัดส่วนประเภทผลงาน (Document Types)
+                </h3>
+                <div class="h-64 flex justify-center">
+                    <canvas id="docTypeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Open Access Status -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg">
+                <h3 class="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-unlock text-emerald-400"></i> สถานะการสิทธิ์เข้าถึง (Open Access Distribution)
+                </h3>
+                <div class="h-64 flex justify-center">
+                    <canvas id="oaChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Top Publication Venues -->
+            <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg">
+                <h3 class="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-ranking-star text-amber-400"></i> 6 อันดับแหล่งตีพิมพ์ที่มีผลงานสูงสุด
+                </h3>
+                <div class="h-64">
+                    <canvas id="venueChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Top Cited Papers Table -->
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-rose-500"></i> งานวิจัยที่ได้รับการอ้างอิงสูงสุด (Top Cited Papers)
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/60 text-slate-400 uppercase text-xs border-b border-slate-700">
+                        <tr>
+                            <th class="py-3 px-4">ชื่อบทความวิจัย</th>
+                            <th class="py-3 px-4">ปี</th>
+                            <th class="py-3 px-4">การอ้างอิง</th>
+                            <th class="py-3 px-4">วารสาร / การประชุม</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/50">
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="py-3 px-4 font-medium text-indigo-300">Teaching Plan Generation and Evaluation With GPT-4: Unleashing Potential of LLM</td>
+                            <td class="py-3 px-4">2024</td>
+                            <td class="py-3 px-4 font-bold text-amber-400"><i class="fa-solid fa-quote-right mr-1 text-xs"></i> 110</td>
+                            <td class="py-3 px-4 text-slate-400">IEEE Trans. on Learning Tech.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="py-3 px-4 font-medium text-indigo-300">LLM4CAD: Multimodal Large Language Models for 3D Computer-Aided Design</td>
+                            <td class="py-3 px-4">2025</td>
+                            <td class="py-3 px-4 font-bold text-amber-400"><i class="fa-solid fa-quote-right mr-1 text-xs"></i> 42</td>
+                            <td class="py-3 px-4 text-slate-400">J. of Computing & Info. Science</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="py-3 px-4 font-medium text-indigo-300">DON'T TRUST: VERIFY - GROUNDING LLM QUANTITATIVE REASONING WITH AUTOFORMALIZATION</td>
+                            <td class="py-3 px-4">2024</td>
+                            <td class="py-3 px-4 font-bold text-amber-400"><i class="fa-solid fa-quote-right mr-1 text-xs"></i> 40</td>
+                            <td class="py-3 px-4 text-slate-400">ICLR 2024</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="py-3 px-4 font-medium text-indigo-300">Enhanced Security and Efficiency in Blockchain with Aggregated Zero-Knowledge Proof</td>
+                            <td class="py-3 px-4">2024</td>
+                            <td class="py-3 px-4 font-bold text-amber-400"><i class="fa-solid fa-quote-right mr-1 text-xs"></i> 40</td>
+                            <td class="py-3 px-4 text-slate-400">IEEE Access</td>
+                        </tr>
+                        <tr class="hover:bg-slate-700/30">
+                            <td class="py-3 px-4 font-medium text-indigo-300">Modern chemical graph theory</td>
+                            <td class="py-3 px-4">2024</td>
+                            <td class="py-3 px-4 font-bold text-amber-400"><i class="fa-solid fa-quote-right mr-1 text-xs"></i> 37</td>
+                            <td class="py-3 px-4 text-slate-400">WIREs Comput. Mol. Sci.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Data Render Scripts -->
+    <script>
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Kanit';
+
+        // 1. Year Trend Chart
+        new Chart(document.getElementById('yearChart'), {
+            type: 'bar',
+            data: {
+                labels: ['2023', '2024', '2025'],
+                datasets: [{
+                    label: 'จำนวนงานวิจัย',
+                    data: [7, 113, 480],
+                    backgroundColor: '#6366f1',
+                    borderRadius: 6
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 2. Document Types Chart
+        new Chart(document.getElementById('docTypeChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Conference Paper', 'Article'],
+                datasets: [{
+                    data: [312, 288],
+                    backgroundColor: ['#06b6d4', '#f43f5e']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 3. Open Access Chart
+        new Chart(document.getElementById('oaChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Closed / Subscribed', 'Gold OA', 'Green / Other OA'],
+                datasets: [{
+                    data: [313, 246, 41],
+                    backgroundColor: ['#64748b', '#10b981', '#a855f7']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. Venue Chart
+        new Chart(document.getElementById('venueChart'), {
+            type: 'bar',
+            data: {
+                labels: ['LIPIcs', 'ACM MM', 'Applied Sciences', 'SPIE Proc.', 'IEEE Access', 'ACM Trans. Graphics'],
+                datasets: [{
+                    label: 'จำนวนบทความ',
+                    data: [33, 20, 16, 13, 11, 9],
+                    backgroundColor: '#f59e0b',
+                    borderRadius: 6
+                }]
+            },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+</body>
+</html>
